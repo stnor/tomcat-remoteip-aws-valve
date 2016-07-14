@@ -1,0 +1,9 @@
+language: java
+after_success: '[ ${TRAVIS_PULL_REQUEST} = ''false'' ] && [ ${TRAVIS_BRANCH} = ''master'' ] && mvn deploy -DskipTests=true -B --settings deploy-settings.xml'
+jdk:
+- oraclejdk8
+env:
+  secure: r3uHx3OPAlBj/Z5sOUvZ/yTSIdGX1XSK/TNOC/7Sz8jAWcesEJyVFloqhpF/O0OShABSD9UQQSOBBzDeiJwGEUPQMZq5sy2fC7dJbMJRC7v1rf1kWPVdLvf0NHNBp67RNXl84xPscjDMt8gId80e2OgkmTvO+b9nP1+AcmsGVXgq5CxkZHMHNjaqtjXIqBAXyVIm9JYauv5hHlIkW4IM3BmyuNdLO2gPtZ2zKdc1+MaHyhZZWQNxoeR0r7CBfJkXob9bGvbezkDzXy4ddAu8quN9VoQwb7PO8NwHtr1Z7B7ma38delmYS4wgidnhIg+X4KJwwDyzyvclaQ42IMrnO+SjlV2Q6TuIz0IQ/7uWHA20DeEXDCYDUQ7pvhXVNo2Mu63y9AJmZvat3lGykMRWEYQVZriuOgPJ1D4NeuuSDpiJIG1JSMje2ghRmfG4h1RP6pnbdpBa2lWLLPOy4s5/Pnb871gC30PtBwpIN7VHhF1Uo3VgA/3PEWr3E1bNOIOFeUfrvoGOC4m74zqS4HtUv8jOnzlFXfVgeoHzDKcOCFjtMbdV+IZlo9twF26k5N4dXSZFPN2OMtEfjedT15B1HzKBVjj36qxewMLn2ydc5Lm/VAjuUX+u/H4JxVLvyu3chB1XRkOB5DkrxT0MunkV8FTvgv7UnIleT2p0OHYc+vc=
+caches:
+  directories:
+  - $HOME/.m2/repository

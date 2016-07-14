@@ -6,7 +6,7 @@ it generates the list based on the published IP ranges of AWS.
 
 By default only cloudfront is included, but is possible via configuration to change the services.
 
-The valve loads the IP ranges once on startup, and checks for updates [every minute](#3).
+The valve loads the IP ranges once on startup, and checks for updates [every minute](https://github.com/Collaborne/tomcat-remoteip-aws-valve/issues/3).
 
 Installation
 ------------

@@ -1,4 +1,4 @@
-tomcat-remoteip-aws-valve
+tomcat-remoteip-aws-valve [![Build Status](https://travis-ci.org/Collaborne/tomcat-remoteip-aws-valve.svg?branch=master)](https://travis-ci.org/Collaborne/tomcat-remoteip-aws-valve)
 =========================
 
 The tomcat-remoteip-aws-valve is a (almost 1:1) replacment for the existing RemoteIpValve delivered with Tomcat. Instead of using a hard-coded list of trusted proxies

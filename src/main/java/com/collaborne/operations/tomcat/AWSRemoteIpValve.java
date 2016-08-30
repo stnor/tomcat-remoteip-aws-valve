@@ -188,6 +188,13 @@ public class AWSRemoteIpValve extends RemoteIpValve {
 			}
 		}
 
-		setTrustedProxies(sb.toString());
+		String trustedProxies = sb.toString();
+		if (trustedProxies.equals(getTrustedProxies())) {
+			// Nothing has changed here
+			return;
+		}
+
+		log.info("Updating trusted proxies: " + trustedProxies);
+		setTrustedProxies(trustedProxies);
 	}
 }

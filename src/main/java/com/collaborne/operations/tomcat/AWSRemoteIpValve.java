@@ -49,7 +49,9 @@ public class AWSRemoteIpValve extends RemoteIpValve {
 	private final ScheduledExecutorService updateScheduler = Executors.newSingleThreadScheduledExecutor(new ThreadFactory() {
 		@Override
 		public Thread newThread(Runnable r) {
-			Thread t = new Thread(r, "aws-ip-range-updater"); t.setDaemon(true); return t;
+			Thread t = new Thread(r, "aws-ip-range-updater");
+			t.setDaemon(true);
+			return t;
 		}
 	});
 

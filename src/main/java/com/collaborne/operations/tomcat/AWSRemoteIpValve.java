@@ -155,6 +155,7 @@ public class AWSRemoteIpValve extends RemoteIpValve {
 		// Fetch the contents of ip-ranges.json, and find the ones for the services
 		// Schedule the update to happen
 		HttpURLConnection connection = (HttpURLConnection) new URL(ipRangesUrl).openConnection();
+		connection.setConnectTimeout((int) TimeUnit.SECONDS.toMillis(5));
 		if (lastETag != null) {
 			connection.addRequestProperty("If-None-Match", lastETag);
 		}

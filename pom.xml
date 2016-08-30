@@ -27,7 +27,7 @@
 
 	<groupId>com.collaborne.operations</groupId>
 	<artifactId>tomcat-remoteip-aws-valve</artifactId>
-	<version>1.0.1</version>
+	<version>1.0.2-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
 	<name>Tomcat RemoteIPValve for AWS</name>
@@ -53,7 +53,7 @@
 	<scm>
 		<connection>scm:git:https://github.com/Collaborne/${project.artifactId}</connection>
 		<developerConnection>${project.scm.connection}</developerConnection>
-	  <tag>tomcat-remoteip-aws-valve-1.0.1</tag>
+	  <tag>HEAD</tag>
   </scm>
 
 	<issueManagement>

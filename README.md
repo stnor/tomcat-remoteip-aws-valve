@@ -2,7 +2,7 @@ tomcat-remoteip-aws-valve [![Build Status](https://travis-ci.org/Collaborne/tomc
 =========================
 
 The tomcat-remoteip-aws-valve is a (almost 1:1) replacment for the existing RemoteIpValve delivered with Tomcat. Instead of using a hard-coded list of trusted proxies
-it generates the list based on the published IP ranges of AWS.
+it generates the list based on the [published IP ranges of AWS](http://docs.aws.amazon.com/general/latest/gr/aws-ip-ranges.html).
 
 By default only cloudfront is included, but is possible via configuration to change the services.
 

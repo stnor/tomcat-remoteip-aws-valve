@@ -189,6 +189,18 @@ public class AWSRemoteIpValve extends RemoteIpValve {
 		}
 
 		String trustedProxies = sb.toString();
+		updateTrustedProxies(trustedProxies);
+	}
+
+	/**
+	 * Update the internal trusted proxies using {@link #setTrustedProxies(String)}.
+	 *
+	 * If the given value matches the current value the update is avoided.
+	 *
+	 * @param trustedProxies new trusted proxies
+	 */
+	// 'synchronized' so that we can guarantee that other threads see the update
+	private synchronized void updateTrustedProxies(String trustedProxies) {
 		if (trustedProxies.equals(getTrustedProxies())) {
 			// Nothing has changed here
 			return;

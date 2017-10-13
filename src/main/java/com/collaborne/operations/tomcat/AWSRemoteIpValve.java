@@ -44,7 +44,7 @@ public class AWSRemoteIpValve extends RemoteIpValve {
 	/** URL to the published AWS IP ranges */
 	private static final String DEFAULT_IP_RANGES_URL = "https://ip-ranges.amazonaws.com/ip-ranges.json";
 
-    private static final Log log = LogFactory.getLog(AWSRemoteIpValve.class);
+	private static final Log log = LogFactory.getLog(AWSRemoteIpValve.class);
 
 	private final ScheduledExecutorService updateScheduler = Executors.newSingleThreadScheduledExecutor(new ThreadFactory() {
 		@Override

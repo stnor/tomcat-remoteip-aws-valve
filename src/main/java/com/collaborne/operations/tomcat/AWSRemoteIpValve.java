@@ -36,6 +36,7 @@ import javax.json.JsonArray;
 import javax.json.JsonObject;
 import javax.json.JsonReader;
 
+import org.apache.catalina.LifecycleException;
 import org.apache.catalina.valves.RemoteIpValve;
 import org.apache.juli.logging.Log;
 import org.apache.juli.logging.LogFactory;
@@ -57,13 +58,15 @@ public class AWSRemoteIpValve extends RemoteIpValve {
 
 	private String ipRangesUrl = DEFAULT_IP_RANGES_URL;
 	private List<String> services = Arrays.asList(new String[] {"CLOUDFRONT"});
-
+	/** Whether the initial update must succeed */
+	private boolean requireInitialUpdateSuccess = true;
+	
 	private String lastETag;
 
 	public AWSRemoteIpValve() {
 		super();
 
-		// Do an initial blocking update, and then
+		// Schedule updates to happen every few seconds.
 		updateScheduler.scheduleWithFixedDelay(new Runnable() {
 			@Override
 			public void run() {
@@ -74,6 +77,23 @@ public class AWSRemoteIpValve extends RemoteIpValve {
 				}
 			}
 		}, 0, 60, TimeUnit.SECONDS);
+	}
+
+	@Override
+	protected void startInternal() throws LifecycleException {
+		super.startInternal();
+
+		// Do a blocking update now, so that even the first requests have a chance of being correct.
+		// The 'requireInitialUpdateSuccess' setting can be used to allow this to fail.
+		try {
+			updateIpRanges();
+		} catch (IOException e) {
+			if (isRequireInitialUpdateSuccess()) {
+				throw new LifecycleException("Cannot get initial AWS IP ranges", e);
+			}
+
+			log.warn("Cannot update AWS IP ranges", e);
+		}
 	}
 
 	public String getIpRangesUrl() {
@@ -90,6 +110,14 @@ public class AWSRemoteIpValve extends RemoteIpValve {
 
 	public void setServices(String servicesString) {
 		this.services = Arrays.stream(servicesString.split(",")).map(service -> service.trim().toUpperCase(Locale.ROOT)).collect(Collectors.toList());
+	}
+
+	public boolean isRequireInitialUpdateSuccess() {
+		return requireInitialUpdateSuccess;
+	}
+
+	public void setRequireInitialUpdateSuccess(boolean requireInitialUpdateSuccess) {
+		this.requireInitialUpdateSuccess = requireInitialUpdateSuccess;
 	}
 
 	protected static void appendRangeRegularExpression(StringBuilder sb, String prefix) throws UnknownHostException {

@@ -32,7 +32,8 @@ Configuration
    <Valve className="com.collaborne.operations.tomcat.AWSRemoteIpValve"
           services="CLOUDFRONT"
           requestAttributesEnabled="true"
-          remoteIpHeader="x-forwarded-for" protocolHeader="x-forwarded-proto"/>
+          remoteIpHeader="x-forwarded-for" protocolHeader="x-forwarded-proto"
+          requireInitialUpdateSuccess="true"/>
    ~~~~
 
 2. For using the remote IP addresses in the `AccessLogValve` additionally enable the `requestAttributesEnabled` attribute of the `AccessLogValve`.

@@ -76,7 +76,7 @@ public class AWSRemoteIpValve extends RemoteIpValve {
 					log.warn("Cannot update AWS IP ranges", e);
 				}
 			}
-		}, 0, 60, TimeUnit.SECONDS);
+		}, 60, 60, TimeUnit.SECONDS);
 	}
 
 	@Override

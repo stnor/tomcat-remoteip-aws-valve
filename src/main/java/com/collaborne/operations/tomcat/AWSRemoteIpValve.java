@@ -197,7 +197,7 @@ public class AWSRemoteIpValve extends RemoteIpValve {
 	protected void updateIpRanges() throws MalformedURLException, IOException {
 		// Fetch the contents of ip-ranges.json, and find the ones for the services
 		// Schedule the update to happen
-		log.debug("Checking for updated AWS IP ranges.");
+		log.info("Checking for updated AWS IP ranges." + this.updateInterval);
 
 		HttpURLConnection connection = (HttpURLConnection) new URL(ipRangesUrl).openConnection();
 		connection.setConnectTimeout((int) TimeUnit.SECONDS.toMillis(5));

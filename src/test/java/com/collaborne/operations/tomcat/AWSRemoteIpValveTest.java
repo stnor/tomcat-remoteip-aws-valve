@@ -39,19 +39,19 @@ class AWSRemoteIpValveTest {
     public void testLatency() throws Exception {
         MockRequest request = createMockRequest();
         valve.invoke(request, null); // Get rid of overhead for the first request
-        long t1 = System.currentTimeMillis();
+        long t1 = System.nanoTime();
         for(int i = 0; i< ITERATIONS; i++) {
             valve.invoke(request, null);
         }
-        long t2 = System.currentTimeMillis();
+        long t2 = System.nanoTime();
 
-        Long duration = t2 - t1;
-        Float avgDuration = (duration.floatValue()/ITERATIONS);
+        long durationNanos = t2 - t1;
+        float avgDurationNanos = durationNanos/ITERATIONS;
 
-        System.out.println("Duration: " + duration + "ms for " + ITERATIONS + " iterations");
-        System.out.println("Average: " + avgDuration + "ms");
+        System.out.println("Duration: " + durationNanos / 1000000 + "ms for " + ITERATIONS + " iterations");
+        System.out.println("Average: " + avgDurationNanos + "ns");
 
-        assertTrue(avgDuration<0.01);
+        assertTrue(avgDurationNanos<100000);
     }
 
     private MockRequest createMockRequest() {

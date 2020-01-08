@@ -184,7 +184,7 @@ public class AWSRemoteIpValve extends RemoteIpValve {
 
 		// Finally, add the remaining octets as "any"
 		while (i < 4) {
-			prefixBuilder.append("([1-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])");
+			prefixBuilder.append("([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])");
 			if (i < 3) {
 				prefixBuilder.append("\\.");
 			}

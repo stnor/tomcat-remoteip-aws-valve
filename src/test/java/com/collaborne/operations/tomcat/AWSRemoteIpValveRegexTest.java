@@ -20,8 +20,6 @@ import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
 class AWSRemoteIpValveRegexTest {
 
   public static final String REMOTE_ADDR = "1.2.3.4";

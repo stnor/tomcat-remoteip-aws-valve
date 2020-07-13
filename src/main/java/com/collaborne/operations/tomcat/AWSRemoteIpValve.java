@@ -16,6 +16,8 @@
 package com.collaborne.operations.tomcat;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.URLConnection;
 import java.net.HttpURLConnection;
 import java.net.Inet4Address;
 import java.net.InetAddress;
@@ -159,27 +161,31 @@ public class AWSRemoteIpValve extends RemoteIpValve {
 		int i = 0;
 		while (i < 4 && firstAddress[i] == lastAddress[i]) {
 			prefixBuilder.append('(').append(firstAddress[i] & 0xFF).append(')');
-			prefixBuilder.append("\\.");
-			i++;
-		}
-
-		// Now, for next octet we may need to enumerate the possible values, and then compress them by their length
-		int firstPossible = firstAddress[i] & 0xFF;
-		int lastPossible = lastAddress[i] & 0xFF;
-		if (firstPossible != 0 || lastPossible != 255) {
-			prefixBuilder.append('(');
-			for (int j = firstPossible; j <= lastPossible; j++) {
-				// TODO: do the actual compression
-				prefixBuilder.append(Integer.toString(j));
-				if (j < lastPossible) {
-					prefixBuilder.append('|');
-				}
-			}
-			prefixBuilder.append(')');
 			if (i < 3) {
 				prefixBuilder.append("\\.");
 			}
 			i++;
+		}
+
+		// Now, for next octet we may need to enumerate the possible values, and then compress them by their length
+		if (i < 4) {
+			int firstPossible = firstAddress[i] & 0xFF;
+			int lastPossible = lastAddress[i] & 0xFF;
+			if (firstPossible != 0 || lastPossible != 255) {
+				prefixBuilder.append('(');
+				for (int j = firstPossible; j <= lastPossible; j++) {
+					// TODO: do the actual compression
+					prefixBuilder.append(Integer.toString(j));
+					if (j < lastPossible) {
+						prefixBuilder.append('|');
+					}
+				}
+				prefixBuilder.append(')');
+				if (i < 3) {
+					prefixBuilder.append("\\.");
+				}
+				i++;
+			}
 		}
 
 		// Finally, add the remaining octets as "any"
@@ -199,23 +205,37 @@ public class AWSRemoteIpValve extends RemoteIpValve {
 		// Schedule the update to happen
 		log.debug("Checking for updated AWS IP ranges.");
 
-		HttpURLConnection connection = (HttpURLConnection) new URL(ipRangesUrl).openConnection();
-		connection.setConnectTimeout((int) TimeUnit.SECONDS.toMillis(5));
-		if (lastETag != null) {
-			connection.addRequestProperty("If-None-Match", lastETag);
+		URL url = new URL(ipRangesUrl);
+		InputStream inputStream;
+
+		if (url.getProtocol().equals("file")) {
+			URLConnection connection = url.openConnection();
+
+			inputStream = connection.getInputStream();
+
+			lastETag = null;
+		} else {
+			HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+
+			connection.setConnectTimeout((int) TimeUnit.SECONDS.toMillis(5));
+			if (lastETag != null) {
+				connection.addRequestProperty("If-None-Match", lastETag);
+			}
+			connection.connect();
+			if (connection.getResponseCode() == 304) {
+				// Good: Nothing has changed
+				return;
+			} else if (connection.getResponseCode() != 200) {
+				// Bad: can't get the file, maybe the URL was changed, etc...
+				throw new IOException("Failed to request current AWS IP ranges: " + connection.getResponseCode() + " " + connection.getResponseMessage());
+			}
+			lastETag = connection.getHeaderField("ETag");
+
+			inputStream = connection.getInputStream();
 		}
-		connection.connect();
-		if (connection.getResponseCode() == 304) {
-			// Good: Nothing has changed
-			return;
-		} else if (connection.getResponseCode() != 200) {
-			// Bad: can't get the file, maybe the URL was changed, etc...
-			throw new IOException("Failed to request current AWS IP ranges: " + connection.getResponseCode() + " " + connection.getResponseMessage());
-		}
-		lastETag = connection.getHeaderField("ETag");
 
 		StringBuilder sb = new StringBuilder();
-		try (JsonReader reader = Json.createReader(connection.getInputStream())) {
+		try (JsonReader reader = Json.createReader(inputStream)) {
 			JsonObject obj = reader.readObject();
 			JsonArray prefixObjs = obj.getJsonArray("prefixes");
 			boolean alternativeNeeded = false;
